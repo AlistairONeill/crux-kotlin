@@ -13,8 +13,8 @@ class ArgBuilder {
     private val args = ArrayList<Any>()
 
     fun scalar(symbol: Symbol) = args.add(symbol)
-
     fun collection(symbol: Symbol) = args.add(PersistentVector.create(symbol, COL))
+    fun tuple(vararg symbols: Symbol) = args.add(PersistentVector.create(*symbols))
 
     fun build() = args.pv
 }

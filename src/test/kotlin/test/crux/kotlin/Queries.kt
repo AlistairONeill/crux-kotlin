@@ -281,6 +281,40 @@ class Queries {
                     (result.map { it[0] } as List<Keyword>).sorted()) { "Should have received the id of Ivan and Petr" }
             }
         }
+
+        @Nested
+        inner class Tuple {
+            @Test
+            fun `Tuple Binding works`() {
+                val p1 = "p1".sym
+                val n = "name".sym
+                val l = "lastName".sym
+
+                val resultRaw = node.db().use {
+                    it.queryKt {
+                        find(p1)
+
+                        args {
+                            tuple(n, l)
+                        }
+
+                        where {
+                            add(p1, name, n)
+                            add(p1, lastName, l)
+                        }
+                    }.run {
+                        tuple(ivan.name, ivan.lastName)
+                    }
+                }
+
+                val result = parseResult(resultRaw)
+
+                assertNotNull(result) { "We should have received a result" }
+                assertEquals(1, result.size) { "We should have only received Ivan" }
+                assertEquals(1, result[0].size) { "We should have only received Ivan's ID" }
+                assertEquals(ivan.id, result[0][0]) { "We should have received Ivan's ID" }
+            }
+        }
     }
 
     private fun parseResult(resultRaw: MutableCollection<MutableList<*>>?): List<List<Any>>? {
