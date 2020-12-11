@@ -1,4 +1,4 @@
-package test.crux.kotlin
+package test.crux.kotlin.queries
 
 import clojure.lang.Keyword
 import crux.api.Crux
@@ -18,7 +18,7 @@ import java.lang.IllegalArgumentException
 import kotlin.test.assertNotNull
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class Queries {
+class SimpleQueries {
     companion object {
         private val ivan = TestDocument("ivan".kw, "Ivan", "Ivanov")
         private val petr = TestDocument("petr".kw, "Petr", "Petrov")
@@ -36,17 +36,18 @@ class Queries {
         val lastName: String,
     )
 
-    private val node = Crux.startNode().also { node ->
-        node.submitTx {
+    private val node = Crux.startNode().apply {
+        submitTx {
             all.forEach {
                 put(it.id) {
-                    doc(name to it.name,
+                    doc(
+                        name to it.name,
                         lastName to it.lastName)
                 }
             }
         }
 
-        node.sync(TIMEOUT)
+        sync(TIMEOUT)
     }
 
     @Nested
