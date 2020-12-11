@@ -317,6 +317,67 @@ class Queries {
         }
     }
 
+    @Nested
+    inner class Predicates {
+        @Test
+        fun `Simple predicates work`() {
+            val age = "age".sym
+            val gt = ">".sym
+
+            val resultRaw = node.db().use {
+                it.queryKt {
+                    find(age)
+
+                    args {
+                        collection(age)
+                    }
+
+                    where {
+                        pred(gt, age, 21)
+                    }
+                }.run {
+                    collection(21, 22)
+                }
+            }
+
+            val result = parseResult(resultRaw)
+
+            assertNotNull(result) { "We should have received a result" }
+            assertEquals(1, result.size) { "We should only have received one result" }
+            assertEquals(1, result[0].size) { "We should only have received one value" }
+            assertEquals(22L, result[0][0]) { "That value should be 22" }
+        }
+
+        @Test
+        fun `Another predicate`() {
+            val age = "age".sym
+            val odd = "odd?".sym
+
+            val resultRaw = node.db().use {
+                it.queryKt {
+                    find(age)
+
+                    args {
+                        collection(age)
+                    }
+
+                    where {
+                        pred(odd, age)
+                    }
+                }.run {
+                    collection(21, 22)
+                }
+            }
+
+            val result = parseResult(resultRaw)
+
+            assertNotNull(result) { "We should have received a result" }
+            assertEquals(1, result.size) { "We should only have received one result" }
+            assertEquals(1, result[0].size) { "We should only have received one value" }
+            assertEquals(21L, result[0][0]) { "That value should be 21" }
+        }
+    }
+
     private fun parseResult(resultRaw: MutableCollection<MutableList<*>>?): List<List<Any>>? {
         @Suppress("UNCHECKED_CAST")
         return resultRaw?.toList() as List<List<Any>>?
