@@ -1,11 +1,12 @@
 package crux.kotlin.queries
 
 import clojure.lang.PersistentVector
+import crux.kotlin.extensions.pv
 
-class StatementBuilder {
+class WhereBuilder {
     private val clauses = ArrayList<PersistentVector>()
 
     fun add(vararg words: Any) = clauses.add(PersistentVector.create(*words))
 
-    fun build(): PersistentVector = PersistentVector.create(clauses)
+    fun build(): PersistentVector = clauses.pv
 }

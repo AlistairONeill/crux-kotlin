@@ -1,6 +1,7 @@
 package crux.kotlin.transactions
 
 import clojure.lang.PersistentVector
+import crux.kotlin.extensions.pv
 import crux.kotlin.transactions.statements.*
 
 class TxBuilder {
@@ -12,5 +13,5 @@ class TxBuilder {
     fun evict(id: Any, f:(EvictTxBuilder.()->Unit)? = null) = transactions.add(EvictTxBuilder(id).also{f?.invoke(it)}.build())
     fun fn(id: Any, vararg args: Any) = transactions.add(FnTxBuilder(id, *args).build())
 
-    fun build(): PersistentVector = PersistentVector.create(transactions)
+    fun build(): PersistentVector = transactions.pv
 }

@@ -1,10 +1,9 @@
 package crux.kotlin.queries
 
-import clojure.lang.IPersistentMap
 import clojure.lang.Keyword
-import clojure.lang.PersistentArrayMap
 import clojure.lang.PersistentVector
 import crux.kotlin.extensions.kw
+import crux.kotlin.extensions.pam
 
 class QueryBuilder {
     companion object {
@@ -15,8 +14,8 @@ class QueryBuilder {
 
     private val map = HashMap<Keyword, PersistentVector>()
 
-    private fun clause(name: Keyword, f: StatementBuilder.()->Unit) {
-        map[name] = StatementBuilder().also(f).build()
+    private fun clause(name: Keyword, f: WhereBuilder.()->Unit) {
+        map[name] = WhereBuilder().also(f).build()
     }
 
     private fun statement(name: Keyword, vararg words: Any) {
@@ -24,8 +23,14 @@ class QueryBuilder {
     }
 
     fun find(vararg words: Any) = statement(FIND, *words)
-    fun where(f: StatementBuilder.()->Unit) = clause(WHERE, f)
-    fun args(vararg words: Any) = statement(IN, *words)
 
-    fun build(): IPersistentMap = PersistentArrayMap.create(map)
+    fun where(f: WhereBuilder.()->Unit) {
+        map[WHERE] = WhereBuilder().also(f).build()
+    }
+
+    fun args(f: ArgBuilder.()->Unit) {
+        map[IN] = ArgBuilder().also(f).build()
+    }
+
+    fun build() = map.pam
 }

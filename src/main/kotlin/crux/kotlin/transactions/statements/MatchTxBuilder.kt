@@ -1,8 +1,8 @@
 package crux.kotlin.transactions.statements
 
-import clojure.lang.PersistentArrayMap
 import crux.kotlin.CruxKt.DB_ID
 import crux.kotlin.CruxKt.MATCH
+import crux.kotlin.extensions.pam
 
 class MatchTxBuilder(private val id: Any): AbstractTxStatementBuilder(MATCH) {
     var exists = true
@@ -19,7 +19,7 @@ class MatchTxBuilder(private val id: Any): AbstractTxStatementBuilder(MATCH) {
 
     override val words: Array<out Any?>
         get() = if (exists) {
-            arrayOf(id, PersistentArrayMap.create(data))
+            arrayOf(id, data.pam)
         }
         else {
             arrayOf(id, null)

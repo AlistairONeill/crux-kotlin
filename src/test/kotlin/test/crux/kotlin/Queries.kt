@@ -1,7 +1,6 @@
 package test.crux.kotlin
 
 import clojure.lang.Keyword
-import clojure.lang.PersistentHashSet
 import crux.api.Crux
 import crux.kotlin.extensions.kw
 import crux.kotlin.extensions.sym
@@ -162,12 +161,18 @@ class Queries {
                 val resultRaw = node.db().use {
                     it.queryKt {
                         find(p1)
-                        args(n)
+
+                        args {
+                            scalar(n)
+                        }
+
                         where {
                             add(p1, name, n)
                         }
+                    }.run {
+                        scalar(ivan.name)
                     }
-                }.run(ivan.name)
+                }
 
                 val result = parseResult(resultRaw)
 
@@ -176,6 +181,7 @@ class Queries {
                 assertEquals(1, result[0].size) { "Should only have received 1 value in result" }
                 assertEquals(ivan.id, result[0][0]) { "Should only have received Ivan's id" }
             }
+
 
             @Test
             fun `Multiple scalar bindings`() {
@@ -186,12 +192,19 @@ class Queries {
                 val resultRaw = node.db().use {
                     it.queryKt {
                         find(p1)
-                        args(n, l)
+                        args {
+                            scalar(n)
+                            scalar(l)
+                        }
+
                         where {
                             add(p1, name, n)
                             add(p1, lastName, l)
                         }
-                    }.run(ivan.name, ivan.lastName)
+                    }.run {
+                        scalar(ivan.name)
+                        scalar(ivan.lastName)
+                    }
                 }
 
                 val result = parseResult(resultRaw)
@@ -211,18 +224,61 @@ class Queries {
                 val resultRaw = node.db().use {
                     it.queryKt {
                         find(p1)
-                        args(n, l)
+
+                        args {
+                            scalar(n)
+                            scalar(l)
+                        }
+
                         where {
                             add(p1, name, n)
                             add(p1, lastName, l)
                         }
-                    }.run(ivan.name, "NotIvanov")
+                    }.run {
+                        scalar(ivan.name)
+                        scalar("NotIvanov")
+                    }
                 }
 
                 val result = parseResult(resultRaw)
 
                 assertNotNull(result) { "Should have received a result object" }
                 assertEquals(0, result.size) { "Shouldn't have received any results" }
+            }
+        }
+
+        @Nested
+        inner class Collection {
+            @Test
+            fun `Collection binding works`() {
+                val p1 = "p1".sym
+                val n = "name".sym
+
+                val resultRaw = node.db().use {
+                    it.queryKt {
+                        find(p1)
+
+                        args {
+                            collection(n)
+                        }
+
+                        where {
+                            add(p1, name, n)
+                        }
+                    }.run {
+                        collection(ivan.name, petr.name)
+                    }
+                }
+
+                val result = parseResult(resultRaw)
+                assertNotNull(result) { "Should have received a result object" }
+                assertEquals(2, result.size) { "Should have received two results" }
+                assert(result.all { it.size == 1 }) { "Should only have received the id of each" }
+
+                @Suppress("UNCHECKED_CAST")
+                assertEquals(
+                    listOf(ivan, petr).map { it.id }.sorted(),
+                    (result.map { it[0] } as List<Keyword>).sorted()) { "Should have received the id of Ivan and Petr" }
             }
         }
     }
