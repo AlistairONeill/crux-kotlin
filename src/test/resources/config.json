@@ -1,0 +1,20 @@
+{
+  "crux/tx-log": {
+    "kv-store": {
+      "crux/module": "crux.rocksdb/->kv-store",
+      "db-dir": "test/data/tx-log"
+    }
+  },
+  "crux/document-store": {
+    "kv-store": {
+      "crux/module": "crux.rocksdb/->kv-store",
+      "db-dir": "test/data/doc-store"
+    }
+  },
+  "crux/index-store": {
+    "kv-store": {
+      "crux/module": "crux.rocksdb/->kv-store",
+      "db-dir": "test/data/indices"
+    }
+  }
+}
