@@ -129,6 +129,102 @@ class Queries {
                 }.run()
             }
         }
+
+        @Test
+        fun `Empty results behave`() {
+            val p1 = "p1".sym
+
+            val resultRaw = node.db().use {
+                it.queryKt {
+                    find(p1)
+                    where{
+                        add(p1, name, "James")
+                    }
+                }.run()
+            }
+
+            val result = parseResult(resultRaw)
+
+            assertNotNull(result) { "Should have received an empty result set" }
+            assertEquals(0, result.size) { "Should have received an empty result set" }
+        }
+    }
+
+    @Nested
+    inner class Arguments {
+        @Nested
+        inner class ScalarBinding {
+            @Test
+            fun `Single scalar binding`() {
+                val p1 = "p1".sym
+                val n = "name".sym
+
+                val resultRaw = node.db().use {
+                    it.queryKt {
+                        find(p1)
+                        args(n)
+                        where {
+                            add(p1, name, n)
+                        }
+                    }
+                }.run(ivan.name)
+
+                val result = parseResult(resultRaw)
+
+                assertNotNull(result) { "Should have received a result" }
+                assertEquals(1, result.size) { "Should only have received 1 result" }
+                assertEquals(1, result[0].size) { "Should only have received 1 value in result" }
+                assertEquals(ivan.id, result[0][0]) { "Should only have received Ivan's id" }
+            }
+
+            @Test
+            fun `Multiple scalar bindings`() {
+                val p1 = "p1".sym
+                val n = "name".sym
+                val l = "lastName".sym
+
+                val resultRaw = node.db().use {
+                    it.queryKt {
+                        find(p1)
+                        args(n, l)
+                        where {
+                            add(p1, name, n)
+                            add(p1, lastName, l)
+                        }
+                    }.run(ivan.name, ivan.lastName)
+                }
+
+                val result = parseResult(resultRaw)
+
+                assertNotNull(result) { "Should have received a result" }
+                assertEquals(1, result.size) { "Should only have received 1 result" }
+                assertEquals(1, result[0].size) { "Should only have received 1 value in result" }
+                assertEquals(ivan.id, result[0][0]) { "Should only have received Ivan's id" }
+            }
+
+            @Test
+            fun `Make sure that all args are being used`() {
+                val p1 = "p1".sym
+                val n = "name".sym
+                val l = "lastName".sym
+
+                val resultRaw = node.db().use {
+                    it.queryKt {
+                        find(p1)
+                        args(n, l)
+                        where {
+                            add(p1, name, n)
+                            add(p1, lastName, l)
+                        }
+                    }.run(ivan.name, "NotIvanov")
+                }
+
+                val result = parseResult(resultRaw)
+
+                assertNotNull(result) { "Should have received a result object" }
+                assertEquals(0, result.size) { "Shouldn't have received any results" }
+            }
+        }
     }
 
     private fun parseResult(resultRaw: MutableCollection<MutableList<*>>?): List<List<Any>>? {
