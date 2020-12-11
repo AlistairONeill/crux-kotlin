@@ -3,6 +3,8 @@ package test.crux.kotlin
 import clojure.lang.Keyword
 import crux.api.Crux
 import crux.kotlin.extensions.kw
+import crux.kotlin.extensions.pl
+import crux.kotlin.extensions.pv
 import crux.kotlin.extensions.sym
 import crux.kotlin.queries.queryKt
 import crux.kotlin.transactions.submitTx
@@ -56,7 +58,10 @@ class Queries {
 
             val resultRaw = node.db().use{
                 it.queryKt {
-                    find(p1)
+                    find {
+                        sym(p1)
+                    }
+
                     where {
                         add(p1, name, n)
                         add(p1, lastName, n)
@@ -78,7 +83,11 @@ class Queries {
 
             val resultRaw = node.db().use {
                 it.queryKt {
-                    find(p1, n)
+                    find {
+                        sym(p1)
+                        sym(n)
+                    }
+
                     where {
                         add(p1, name, n)
                         add(p1, lastName, n)
@@ -100,7 +109,10 @@ class Queries {
 
             val resultRaw = node.db().use {
                 it.queryKt {
-                    find(p1)
+                    find {
+                        sym(p1)
+                    }
+
                     where {
                         add(p1, name)
                     }
@@ -135,8 +147,11 @@ class Queries {
 
             val resultRaw = node.db().use {
                 it.queryKt {
-                    find(p1)
-                    where{
+                    find {
+                        sym(p1)
+                    }
+
+                    where {
                         add(p1, name, "James")
                     }
                 }.run()
@@ -160,7 +175,9 @@ class Queries {
 
                 val resultRaw = node.db().use {
                     it.queryKt {
-                        find(p1)
+                        find {
+                            sym(p1)
+                        }
 
                         args {
                             scalar(n)
@@ -191,7 +208,10 @@ class Queries {
 
                 val resultRaw = node.db().use {
                     it.queryKt {
-                        find(p1)
+                        find {
+                            sym(p1)
+                        }
+
                         args {
                             scalar(n)
                             scalar(l)
@@ -223,7 +243,9 @@ class Queries {
 
                 val resultRaw = node.db().use {
                     it.queryKt {
-                        find(p1)
+                        find {
+                            sym(p1)
+                        }
 
                         args {
                             scalar(n)
@@ -256,7 +278,9 @@ class Queries {
 
                 val resultRaw = node.db().use {
                     it.queryKt {
-                        find(p1)
+                        find {
+                            sym(p1)
+                        }
 
                         args {
                             collection(n)
@@ -292,7 +316,9 @@ class Queries {
 
                 val resultRaw = node.db().use {
                     it.queryKt {
-                        find(p1)
+                        find {
+                            sym(p1)
+                        }
 
                         args {
                             tuple(n, l)
@@ -326,7 +352,9 @@ class Queries {
 
             val resultRaw = node.db().use {
                 it.queryKt {
-                    find(age)
+                    find {
+                        sym(age)
+                    }
 
                     args {
                         collection(age)
@@ -355,7 +383,9 @@ class Queries {
 
             val resultRaw = node.db().use {
                 it.queryKt {
-                    find(age)
+                    find {
+                        sym(age)
+                    }
 
                     args {
                         collection(age)
@@ -375,6 +405,61 @@ class Queries {
             assertEquals(1, result.size) { "We should only have received one result" }
             assertEquals(1, result[0].size) { "We should only have received one value" }
             assertEquals(21L, result[0][0]) { "That value should be 21" }
+        }
+    }
+
+    @Nested
+    inner class Aggregates {
+        @Test
+        fun `Mythology examples`() {
+            val heads = "?heads".sym
+            val monster = "?monster".sym
+
+            val sum = "sum".sym
+            val min = "min".sym
+            val max = "max".sym
+            val count = "count".sym
+            val countDistinct = "count-distinct".sym
+
+            val resultRaw = node.db().use {
+                it.queryKt {
+                    find {
+                        agg(sum, heads)
+                        agg(min, heads)
+                        agg(max, heads)
+                        agg(count, heads)
+                        agg(countDistinct, heads)
+                    }
+
+                    where {
+                        add(
+                            listOf(
+                                "identity".sym,
+                                listOf(
+                                    listOf("Cerberus", 3).pv,
+                                    listOf("Medusa", 1).pv,
+                                    listOf("Cyclops", 1).pv,
+                                    listOf("Chimera", 1).pv
+                                ).pv
+                            ).pl,
+                            listOf(
+                                listOf(monster, heads).pv
+                            ).pv
+                        )
+                    }
+                }()
+            }
+
+            val result = parseResult(resultRaw)
+
+            assertNotNull(result) { "We should have received a result" }
+            assertEquals(1, result.size) { "There should be one result" }
+            assertEquals(5, result[0].size) { "There should be five values in the result" }
+            assertEquals(6L, result[0][0]) { "There should be six heads in total" }
+            assertEquals(1L, result[0][1]) { "There is a minimum of one head per monster" }
+            assertEquals(3L, result[0][2]) { "There is a maximum of three heads per monster" }
+            assertEquals(4L, result[0][3]) { "There are four monsters" }
+            assertEquals(2, result[0][4]) { "There are two different counts of heads/monster" }
         }
     }
 

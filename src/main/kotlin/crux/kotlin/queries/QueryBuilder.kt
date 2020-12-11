@@ -14,11 +14,9 @@ class QueryBuilder {
 
     private val map = HashMap<Keyword, PersistentVector>()
 
-    private fun statement(name: Keyword, vararg words: Any) {
-        map[name] = PersistentVector.create(*words)
+    fun find(f: FindBuilder.()->Unit) {
+        map[FIND] = FindBuilder().also(f).build()
     }
-
-    fun find(vararg words: Any) = statement(FIND, *words)
 
     fun where(f: WhereBuilder.()->Unit) {
         map[WHERE] = WhereBuilder().also(f).build()
