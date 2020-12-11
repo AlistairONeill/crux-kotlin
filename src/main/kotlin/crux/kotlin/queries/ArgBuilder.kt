@@ -15,6 +15,6 @@ class ArgBuilder {
     fun scalar(symbol: Symbol) = args.add(symbol)
 
     fun collection(symbol: Symbol) = args.add(PersistentVector.create(symbol, COL))
-    
+
     fun build() = args.pv
 }
