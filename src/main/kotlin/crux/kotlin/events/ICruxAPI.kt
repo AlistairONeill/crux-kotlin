@@ -1,7 +1,6 @@
 package crux.kotlin.events
 
 import clojure.lang.Keyword
-import clojure.lang.PersistentArrayMap
 import crux.api.ICruxAPI
 import crux.kotlin.CruxKt.EVENT_TYPE
 import crux.kotlin.CruxKt.WITH_TX_OPS

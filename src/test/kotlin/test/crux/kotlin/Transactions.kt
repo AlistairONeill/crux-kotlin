@@ -456,7 +456,7 @@ class Transactions {
 
     @Nested
     inner class Functions {
-        val functionRaw = "(fn [ctx eid] (let [db (crux.api/db ctx) entity (crux.api/entity db eid)] [[:crux.tx/put (update entity :version inc)]]))"
+        private val functionRaw = "(fn [ctx eid] (let [db (crux.api/db ctx) entity (crux.api/entity db eid)] [[:crux.tx/put (update entity :version inc)]]))"
 
         @Test
         fun `Functions should work`() {

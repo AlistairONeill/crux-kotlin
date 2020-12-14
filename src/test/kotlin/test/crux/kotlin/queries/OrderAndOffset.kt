@@ -3,7 +3,6 @@ package test.crux.kotlin.queries
 import clojure.lang.Keyword
 import crux.api.Crux
 import crux.kotlin.extensions.kw
-import crux.kotlin.extensions.pv
 import crux.kotlin.extensions.sym
 import crux.kotlin.queries.queryKt
 import crux.kotlin.transactions.submitTx
@@ -132,6 +131,164 @@ class OrderAndOffset {
 
             assertEquals(
                 all.map { listOf(it.id, it.number) }.sortedWith(comparator),
+                result.map { listOf(it[0], it[1])}
+            ) { "These should match up" }
+        }
+    }
+
+    @Nested
+    inner class Limit {
+        @Test
+        fun `Sort ascending with limit`() {
+            val p = "p".sym
+            val n = "n".sym
+
+            val rawResult = node.db().use {
+                it.queryKt {
+                    find {
+                        sym(p)
+                        sym(n)
+                    }
+
+                    where {
+                        add(p, number, n)
+                    }
+
+                    order {
+                        asc(n)
+                        asc(p)
+                    }
+
+                    limit(10)
+                }()
+            }
+
+            val comparator = Comparator { l1: List<Any>, l2: List<Any> ->
+                val n1 = l1[1] as Long
+                val n2 = l2[1] as Long
+                if (n1 != n2) {
+                    (n1 - n2).toInt()
+                }
+                else {
+                    val k1 = l1[0] as Keyword
+                    val k2 = l2[0] as Keyword
+                    k1.compareTo(k2)
+                }
+            }
+
+            @Suppress("UNCHECKED_CAST")
+            val result = rawResult?.toList() as List<List<Any>>
+            assertNotNull(result) { "We should have received a result object" }
+
+            assertEquals(10, result.size) { "We should have received all of our entities back" }
+
+            assertEquals(
+                all.map { listOf(it.id, it.number) }.sortedWith(comparator).take(10),
+                result.map { listOf(it[0], it[1])}
+            ) { "These should match up" }
+        }
+
+        @Test
+        fun `Sort descending with limit`() {
+            val p = "p".sym
+            val n = "n".sym
+
+            val rawResult = node.db().use {
+                it.queryKt {
+                    find {
+                        sym(p)
+                        sym(n)
+                    }
+
+                    where {
+                        add(p, number, n)
+                    }
+
+                    order {
+                        desc(n)
+                        asc(p)
+                    }
+
+                    limit(10)
+                }()
+            }
+
+            val comparator = Comparator { l1: List<Any>, l2: List<Any> ->
+                val n1 = l1[1] as Long
+                val n2 = l2[1] as Long
+                if (n1 != n2) {
+                    (n2 - n1).toInt()
+                }
+                else {
+                    val k1 = l1[0] as Keyword
+                    val k2 = l2[0] as Keyword
+                    k1.compareTo(k2)
+                }
+            }
+
+            @Suppress("UNCHECKED_CAST")
+            val result = rawResult?.toList() as List<List<Any>>
+            assertNotNull(result) { "We should have received a result object" }
+
+            assertEquals(10, result.size) { "We should have received all of our entities back" }
+
+            assertEquals(
+                all.map { listOf(it.id, it.number) }.sortedWith(comparator).take(10),
+                result.map { listOf(it[0], it[1])}
+            ) { "These should match up" }
+        }
+    }
+
+    @Nested
+    inner class Offset {
+        @Test
+        fun `Using in built offset`() {
+            val p = "p".sym
+            val n = "n".sym
+
+            val rawResult = node.db().use {
+                it.queryKt {
+                    find {
+                        sym(p)
+                        sym(n)
+                    }
+
+                    where {
+                        add(p, number, n)
+                    }
+
+                    order {
+                        asc(n)
+                        asc(p)
+                    }
+
+                    limit(10)
+
+                    offset(10)
+                }()
+            }
+
+            val comparator = Comparator { l1: List<Any>, l2: List<Any> ->
+                val n1 = l1[1] as Long
+                val n2 = l2[1] as Long
+                if (n1 != n2) {
+                    (n1 - n2).toInt()
+                }
+                else {
+                    val k1 = l1[0] as Keyword
+                    val k2 = l2[0] as Keyword
+                    k1.compareTo(k2)
+                }
+            }
+
+            @Suppress("UNCHECKED_CAST")
+            val result = rawResult?.toList() as List<List<Any>>
+            assertNotNull(result) { "We should have received a result object" }
+
+            assertEquals(10, result.size) { "We should have received all of our entities back" }
+
+            assertEquals(
+                all.map { listOf(it.id, it.number) }.sortedWith(comparator).drop(10).take(10),
                 result.map { listOf(it[0], it[1])}
             ) { "These should match up" }
         }
