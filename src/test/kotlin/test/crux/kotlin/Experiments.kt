@@ -129,8 +129,8 @@ class Experiments {
             node.submitTx {
                 put(id) {
                     doc(key to "F")
-                    validTime = times[2] //Twednesday
-                    endValidTime = times[3] //Wursday
+                    validTime = times[2] //Twednesday morning
+                    endValidTime = times[3] //Wursday afternoon
                 }
             }[txTimeKey] as Date
         )
