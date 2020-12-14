@@ -7,6 +7,7 @@ import crux.kotlin.extensions.kw
 import crux.kotlin.extensions.sym
 import crux.kotlin.queries.queryKt
 import crux.kotlin.transactions.submitTx
+import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
@@ -54,35 +55,37 @@ class Rules {
         val n = "?n".sym
         val t = "?t".sym
 
-        val resultRaw = node.db().queryKt {
-            find {
-                sym(e1)
-            }
-
-            where {
-                rule(followSym, e1, n)
-            }
-
-            args {
-                scalar(n)
-            }
-
-            rules {
-                add(followSym, e1, e2) {
-                    add(e1, followKw, e2)
+        val resultRaw = node.db().use {
+            it.queryKt {
+                find {
+                    sym(e1)
                 }
 
-                add(followSym, e1, e2) {
-                    add(e1, followKw, t)
-                    rule(followSym, t, e2)
+                where {
+                    rule(followSym, e1, n)
                 }
-            }
 
-            order {
-                asc(e1)
+                args {
+                    scalar(n)
+                }
+
+                rules {
+                    add(followSym, e1, e2) {
+                        add(e1, followKw, e2)
+                    }
+
+                    add(followSym, e1, e2) {
+                        add(e1, followKw, t)
+                        rule(followSym, t, e2)
+                    }
+                }
+
+                order {
+                    asc(e1)
+                }
+            }.run {
+                scalar(ivan.id)
             }
-        }.run {
-            scalar(ivan.id)
         }
 
         assertNotNull(resultRaw) { "We should have received a result object" }
@@ -91,5 +94,11 @@ class Rules {
         assertEquals(2, result.size) { "Should have received two results" }
         assert(result.all { it.size == 1 } ) { "Each result should have one value" }
         assertEquals(listOf(petr.id, sergei.id), result.map { it[0] }) { "Should have returned petr and sergei's ids in that order" }
+    }
+
+
+    @AfterAll
+    fun closeNode() {
+        node.close()
     }
 }
