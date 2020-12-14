@@ -12,6 +12,7 @@ class QueryBuilder {
         val ORDER: Keyword = "order-by".kw
         val OFFSET: Keyword = "offset".kw
         val LIMIT: Keyword = "limit".kw
+        val RULES: Keyword = "rules".kw
     }
 
     private val map = HashMap<Keyword, Any>()
@@ -38,6 +39,14 @@ class QueryBuilder {
 
     fun limit(value: Long) {
         map[LIMIT] = value
+    }
+
+    fun rules(f: RulesBuilder.()->Unit) {
+        map[RULES] = RulesBuilder().also(f).build()
+    }
+
+    fun other(key: Keyword, value: Any) {
+        map[key] = value
     }
 
     fun build() = map.pam

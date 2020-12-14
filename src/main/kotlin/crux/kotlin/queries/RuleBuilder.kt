@@ -5,8 +5,8 @@ import clojure.lang.Symbol
 import crux.kotlin.extensions.pl
 import crux.kotlin.extensions.pv
 
-class WhereBuilder {
-    private val clauses = ArrayList<Any>()
+class RuleBuilder(name: Symbol, vararg args: Symbol) {
+    private val clauses: ArrayList<Any> = arrayListOf(listOf(name, *args).pl)
 
     fun add(vararg words: Any) = clauses.add(PersistentVector.create(*words))
 
@@ -15,7 +15,7 @@ class WhereBuilder {
         clauses.add(PersistentVector.create(list))
     }
 
-    fun rule(symbol: Symbol, vararg args: Any) = clauses.add(listOf(symbol, *args).pl)
+    fun rule(symbol: Symbol, vararg args: Symbol) = clauses.add(listOf(symbol, *args).pl)
 
     fun build(): PersistentVector = clauses.pv
 }
