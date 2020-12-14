@@ -10,6 +10,7 @@ class QueryBuilder {
         val FIND: Keyword = "find".kw
         val WHERE: Keyword = "where".kw
         val IN: Keyword = "in".kw
+        val ORDER: Keyword = "order-by".kw
     }
 
     private val map = HashMap<Keyword, PersistentVector>()
@@ -24,6 +25,10 @@ class QueryBuilder {
 
     fun args(f: ArgBuilder.()->Unit) {
         map[IN] = ArgBuilder().also(f).build()
+    }
+
+    fun order(f: OrderBuilder.()->Unit) {
+        map[ORDER] = OrderBuilder().also(f).build()
     }
 
     fun build() = map.pam
