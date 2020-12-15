@@ -248,8 +248,7 @@ class Projection {
             val resultsRaw = node.db().use {
                 it.queryKt {
                     find {
-                        //TODO: Figure out why this cast is needed
-                        project(p, Person::class as KClass<ICruxDataClass>)
+                        project(p, Person::class)
                     }
 
                     where {
@@ -270,6 +269,10 @@ class Projection {
             assert(results.all { it[0].containsKey(personProfession) } ) { "Maps should all contain :person/profession" }
             assert(results.all { it[0].containsKey(personId) } ) { "Maps should all contain :person/id" }
             assert(results.all { it[0].containsKey(personName) } ) { "Maps should all contain :person/name" }
+
+            val mapped = results.map { ICruxDataClass.factory(it[0], Person::class) }.sortedBy { it.id }
+            val expected = allPeople.map { Person(it.id, it.uid, it.name, it.profession) }.sortedBy { it.id }
+            assertEquals(mapped, expected) { "Should have mapped to the same data entities" }
         }
 
         @Test
@@ -308,41 +311,10 @@ class Projection {
             assert(results.all { it[0].containsKey(personProfession) } ) { "Maps should all contain :person/profession" }
             assert(results.all { it[0].containsKey(personId) } ) { "Maps should all contain :person/id" }
             assert(results.all { it[0].containsKey(personName) } ) { "Maps should all contain :person/name" }
-        }
-
-        @Test
-        fun `Generating into instance of our class`() {
-            data class Person(
-                override val cruxId: Keyword,
-                @property:CruxKey("person/id") val notId: Long,
-                @property:CruxKey("person/name") val name: String,
-                @property:CruxKey("person/profession") val profession: Keyword
-            ): ICruxDataClass
-
-            val p = "person".sym
-
-            @Suppress("UNCHECKED_CAST")
-            val resultsRaw = node.db().use {
-                it.queryKt {
-                    find {
-                        project(p, Person::class)
-                    }
-
-                    where {
-                        add(p, personName)
-                    }
-                }()
-            }
-
-            assertNotNull(resultsRaw)
-
-            @Suppress("UNCHECKED_CAST")
-            val results = resultsRaw!!.toList() as List<List<PersistentArrayMap>>
 
             val mapped = results.map { ICruxDataClass.factory(it[0], Person::class) }.sortedBy { it.notId }
             val expected = allPeople.map { Person(it.id, it.uid, it.name, it.profession) }.sortedBy { it.notId }
-
-            assertEquals(mapped, expected)
+            assertEquals(mapped, expected) { "Should have mapped to the same data entities" }
         }
     }
 
