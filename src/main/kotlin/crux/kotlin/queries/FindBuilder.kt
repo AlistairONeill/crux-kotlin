@@ -4,6 +4,8 @@ import clojure.lang.Symbol
 import crux.kotlin.extensions.pl
 import crux.kotlin.extensions.pv
 import crux.kotlin.extensions.sym
+import crux.kotlin.projection.ICruxDataClass
+import kotlin.reflect.KClass
 
 class FindBuilder {
     companion object {
@@ -26,6 +28,8 @@ class FindBuilder {
             ).pl
         )
     }
+
+    fun <T: ICruxDataClass> project(sym: Symbol, cruxClass: KClass<T>) = project(sym, ICruxDataClass.getProjectionSpec(cruxClass))
 
     fun build() = args.pv
 }

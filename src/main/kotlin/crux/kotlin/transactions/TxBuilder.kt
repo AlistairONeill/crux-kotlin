@@ -2,6 +2,7 @@ package crux.kotlin.transactions
 
 import clojure.lang.PersistentVector
 import crux.kotlin.extensions.pv
+import crux.kotlin.projection.ICruxDataClass
 import crux.kotlin.transactions.statements.*
 
 class TxBuilder {
@@ -12,6 +13,13 @@ class TxBuilder {
     fun match(id: Any, f:(MatchTxBuilder.()->Unit)? = null) = transactions.add(MatchTxBuilder(id).also{f?.invoke(it)}.build())
     fun evict(id: Any, f:(EvictTxBuilder.()->Unit)? = null) = transactions.add(EvictTxBuilder(id).also{f?.invoke(it)}.build())
     fun fn(id: Any, vararg args: Any) = transactions.add(FnTxBuilder(id, *args).build())
+
+
+    fun put(doc: ICruxDataClass) {
+        doc.generatePutData().forEach {
+            put(it.first, it.second)
+        }
+    }
 
     fun build(): PersistentVector = transactions.pv
 }
