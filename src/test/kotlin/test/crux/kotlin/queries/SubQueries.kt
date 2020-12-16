@@ -26,13 +26,13 @@ class SubQueries {
             val resultRaw = node.db().use {
                 it.queryKt {
                     find {
-                        +x
+                        + x
                     }
 
                     where {
                         subQuery(x) {
                             find {
-                                +y
+                                + y
                             }
 
                             where {
@@ -62,13 +62,13 @@ class SubQueries {
             val resultRaw = node.db().use {
                 it.queryKt {
                     find {
-                        +x
+                        + x
                     }
 
                     where {
                         subQuery(listOf(listOf(x).pv).pv) {
                             find {
-                                +y
+                                + y
                             }
 
                             where {

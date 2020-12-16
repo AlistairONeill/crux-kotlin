@@ -39,8 +39,8 @@ class JoinedQueries {
         submitTx {
             all.forEach {
                 put(it.id) {
-                    doc(name to it.name,
-                        follows to it.follows)
+                    + (name to it.name)
+                    + (follows to it.follows)
                 }
             }
         }

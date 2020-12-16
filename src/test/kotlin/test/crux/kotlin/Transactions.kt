@@ -47,7 +47,7 @@ class Transactions {
         fun `Pablo at current time`() {
             node.submitTx {
                 put(pabloId) {
-                    doc(nameKey to name)
+                    + (nameKey to name)
                 }
             }
 
@@ -60,7 +60,7 @@ class Transactions {
         fun `Pablo at specific time`() {
             node.submitTx {
                 put(pabloId) {
-                    doc(nameKey to name)
+                    + (nameKey to name)
                     validTime = testTimes[1]
                 }
             }
@@ -76,7 +76,7 @@ class Transactions {
         fun `Pablo with an end valid time`() {
             node.submitTx {
                 put(pabloId) {
-                    doc(nameKey to name)
+                    + (nameKey to name)
                     validTime = testTimes[1]
                     endValidTime = testTimes[3]
                 }
@@ -95,16 +95,16 @@ class Transactions {
         fun `Pablo with different versions`() {
             node.submitTx {
                 put(pabloId) {
-                    doc(
-                        nameKey to name,
-                        version to 0)
+                    + (nameKey to name)
+                    + (version to 0)
+
                     validTime = testTimes[1]
                 }
 
                 put(pabloId) {
-                    doc(
-                        nameKey to name,
-                        version to 1)
+                    + (nameKey to name)
+                    + (version to 1)
+
                     validTime = testTimes[3]
                 }
             }
@@ -122,15 +122,16 @@ class Transactions {
         fun `Using Instants rather than Dates`() {
             node.submitTx {
                 put(pabloId) {
-                    doc(nameKey to name,
-                        version to 0)
+                    + (nameKey to name)
+                    + (version to 0)
+
                     validTime(testTimes[1].toInstant())
                     endValidTime(testTimes[3].toInstant())
                 }
 
                 put(pabloId) {
-                    doc(nameKey to name,
-                        version to 1)
+                    + (nameKey to name)
+                    + (version to 1)
                     validTime(testTimes[5].toInstant())
                 }
             }
@@ -154,7 +155,8 @@ class Transactions {
         fun `Deleting Pablo at current time`() {
             node.submitTx {
                 put(pabloId) {
-                    doc(nameKey to name)
+                    + (nameKey to name)
+
                     validTime = testTimes[1]
                 }
 
@@ -173,7 +175,7 @@ class Transactions {
         fun `Deleting Pablo at specific time`() {
             node.submitTx {
                 put(pabloId) {
-                    doc(nameKey to name)
+                    + (nameKey to name)
                     validTime = testTimes[1]
                 }
                 delete(pabloId) {
@@ -194,7 +196,7 @@ class Transactions {
         fun `Deleting Pablo with an end time`() {
             node.submitTx {
                 put(pabloId) {
-                    doc(nameKey to name)
+                    + (nameKey to name)
                     validTime = testTimes[1]
                 }
 
@@ -222,9 +224,8 @@ class Transactions {
         fun `Update if matches current`() {
             node.submitTx {
                 put(pabloId) {
-                    doc(
-                        nameKey to name,
-                        version to 0)
+                    + (nameKey to name)
+                    + (version to 0)
                 }
             }
 
@@ -240,9 +241,8 @@ class Transactions {
                 }
 
                 put(pabloId) {
-                    doc(
-                        nameKey to name,
-                        version to 1)
+                    + (nameKey to name)
+                    + (version to 1)
                 }
             }
 
@@ -255,9 +255,8 @@ class Transactions {
         fun `Don't update if failed to match current`() {
             node.submitTx {
                 put(pabloId) {
-                    doc(
-                        nameKey to name,
-                        version to 0)
+                    + (nameKey to name)
+                    + (version to 0)
                 }
             }
 
@@ -273,9 +272,8 @@ class Transactions {
                 }
 
                 put(pabloId) {
-                    doc(
-                        nameKey to name,
-                        version to 1)
+                    + (nameKey to name)
+                    + (version to 1)
                 }
             }
 
@@ -286,9 +284,8 @@ class Transactions {
         fun `Match isn't order dependent`() {
             node.submitTx {
                 put(pabloId) {
-                    doc(
-                        nameKey to name,
-                        version to 0)
+                    + (nameKey to name)
+                    + (version to 0)
                 }
             }
 
@@ -305,9 +302,8 @@ class Transactions {
                 }
 
                 put(pabloId) {
-                    doc(
-                        nameKey to name,
-                        version to 1)
+                    + (nameKey to name)
+                    + (version to 1)
                 }
             }
 
@@ -320,9 +316,8 @@ class Transactions {
         fun `Update if matches given valid time`() {
             node.submitTx {
                 put(pabloId) {
-                    doc(
-                        nameKey to name,
-                        version to 0)
+                    + (nameKey to name)
+                    + (version to 0)
                     validTime = testTimes[1]
                     endValidTime = testTimes[3]
                 }
@@ -347,9 +342,8 @@ class Transactions {
                 }
 
                 put(pabloId) {
-                    doc(
-                        nameKey to name,
-                        version to 1)
+                    + (nameKey to name)
+                    + (version to 1)
                     validTime = testTimes[5]
                 }
             }
@@ -369,9 +363,9 @@ class Transactions {
         fun `Don't update if doesn't match given valid time`() {
             node.submitTx {
                 put(pabloId) {
-                    doc(
-                        nameKey to name,
-                        version to 0)
+                    + (nameKey to name)
+                    + (version to 0)
+
                     validTime = testTimes[1]
                     endValidTime = testTimes[3]
                 }
@@ -396,9 +390,8 @@ class Transactions {
                 }
 
                 put(pabloId) {
-                    doc(
-                        nameKey to name,
-                        version to 1)
+                    + (nameKey to name)
+                    + (version to 1)
                     validTime = testTimes[6]
                 }
             }
@@ -422,13 +415,13 @@ class Transactions {
         fun `Check eviction works across all times`() {
             node.submitTx {
                 put(pabloId) {
-                    doc(nameKey to name)
+                    + (nameKey to name)
                     validTime = testTimes[1]
                     endValidTime = testTimes[3]
                 }
 
                 put(pabloId) {
-                    doc(nameKey to name)
+                    + (nameKey to name)
                 }
             }
 
@@ -468,9 +461,8 @@ class Transactions {
                 }
 
                 put(pabloId) {
-                    doc(
-                        nameKey to name,
-                        version to 0)
+                    + (nameKey to name)
+                    + (version to 0)
                 }
             }
 
@@ -500,7 +492,7 @@ class Transactions {
 
             val transaction = node.submitTx {
                 put(pabloId) {
-                    doc(nameKey to name)
+                    + (nameKey to name)
                 }
             }
 
@@ -520,7 +512,7 @@ class Transactions {
 
             node.submitTx {
                 put(pabloId) {
-                    doc(nameKey to name)
+                    + (nameKey to name)
                 }
             }
 
@@ -540,7 +532,7 @@ class Transactions {
 
             val transaction = node.submitTx {
                 put(pabloId) {
-                    doc(nameKey to name)
+                    + (nameKey to name)
                 }
             }
 
@@ -571,9 +563,8 @@ class Transactions {
         fun `Doesn't update the real node`() {
             node.submitTx {
                 put(pabloId) {
-                    doc(
-                        nameKey to name,
-                        version to 0)
+                    + (nameKey to name)
+                    + (version to 0)
                 }
             }
 
@@ -581,9 +572,8 @@ class Transactions {
 
             val speculativeDb = node.db().withTx {
                 put(pabloId) {
-                    doc(
-                        nameKey to name,
-                        version to 1)
+                    + (nameKey to name)
+                    + (version to 1)
                 }
             }
 
@@ -602,9 +592,8 @@ class Transactions {
         fun `Failing a speculative transaction should return null`() {
             node.submitTx {
                 put(pabloId) {
-                    doc(
-                        nameKey to name,
-                        version to 0)
+                    + (nameKey to name)
+                    + (version to 0)
                 }
             }
 
@@ -612,9 +601,8 @@ class Transactions {
 
             val speculativeDb = node.db().withTx {
                 put(pabloId) {
-                    doc(
-                        nameKey to name,
-                        version to 1)
+                    + (nameKey to name)
+                    + (version to 1)
                 }
 
                 match(pabloId) {

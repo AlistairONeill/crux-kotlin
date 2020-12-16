@@ -36,8 +36,8 @@ class Rules {
         submitTx {
             all.forEach {
                 put(it.id) {
-                    doc(name to it.name,
-                        followKw to it.follows)
+                    + (name to it.name)
+                    + (followKw to it.follows)
                 }
             }
         }

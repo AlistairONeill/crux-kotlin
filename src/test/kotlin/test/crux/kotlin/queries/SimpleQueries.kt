@@ -40,9 +40,8 @@ class SimpleQueries {
         submitTx {
             all.forEach {
                 put(it.id) {
-                    doc(
-                        name to it.name,
-                        lastName to it.lastName)
+                    + (name to it.name)
+                    + (lastName to it.lastName)
                 }
             }
         }

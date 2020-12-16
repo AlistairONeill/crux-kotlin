@@ -29,7 +29,7 @@ class OrderAndOffset {
         submitTx {
             all.forEach {
                 put(it.id) {
-                    doc(number to it.number)
+                    + (number to it.number)
                 }
             }
         }

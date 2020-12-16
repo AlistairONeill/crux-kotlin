@@ -65,15 +65,15 @@ class Projection {
         submitTx {
             allPeople.forEach {
                 put(it.id) {
-                    doc(personId to it.uid,
-                        personName to it.name,
-                        personProfession to it.profession)
+                    + (personId to it.uid)
+                    + (personName to it.name)
+                    + (personProfession to it.profession)
                 }
             }
 
             allProfessions.forEach {
                 put(it.id) {
-                    doc(professionName to it.name)
+                    + (professionName to it.name)
                 }
             }
         }
