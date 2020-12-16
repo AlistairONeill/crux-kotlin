@@ -14,8 +14,8 @@ class FindBuilder {
 
     private val args = ArrayList<Any>()
 
-    fun sym(symbol: Symbol) = args.add(symbol)
-    fun sym(string: String) = args.add(string.sym)
+    private fun sym(symbol: Symbol) = args.add(symbol)
+    private fun sym(string: String) = args.add(string.sym)
 
     fun agg(agg: Symbol, sym: Symbol) = args.add(listOf(agg, sym).pl)
 
@@ -32,4 +32,8 @@ class FindBuilder {
     fun <T: ICruxDataClass> project(sym: Symbol, cruxClass: KClass<T>) = project(sym, ICruxDataClass.getProjectionSpec(cruxClass))
 
     fun build() = args.pv
+
+    operator fun Symbol.unaryPlus() {
+        sym(this)
+    }
 }

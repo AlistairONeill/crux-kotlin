@@ -58,7 +58,7 @@ class Rules {
         val resultRaw = node.db().use {
             it.queryKt {
                 find {
-                    sym(e1)
+                    +e1
                 }
 
                 where {

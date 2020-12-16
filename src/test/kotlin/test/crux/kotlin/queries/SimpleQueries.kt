@@ -60,7 +60,7 @@ class SimpleQueries {
             val resultRaw = node.db().use{
                 it.queryKt {
                     find {
-                        sym(p1)
+                        +p1
                     }
 
                     where {
@@ -79,19 +79,19 @@ class SimpleQueries {
 
         @Test
         fun `Returning some of our other symbols`() {
-            val p1 = "p1".sym
+            val person = "p1".sym
             val n = "n".sym
 
             val resultRaw = node.db().use {
                 it.queryKt {
                     find {
-                        sym(p1)
-                        sym(n)
+                        +person
+                        +n
                     }
 
                     where {
-                        add(p1, name, n)
-                        add(p1, lastName, n)
+                        add(person, name, n)
+                        add(person, lastName, n)
                     }
                 }
             }.run()
@@ -111,7 +111,7 @@ class SimpleQueries {
             val resultRaw = node.db().use {
                 it.queryKt {
                     find {
-                        sym(p1)
+                        +p1
                     }
 
                     where {
@@ -149,7 +149,7 @@ class SimpleQueries {
             val resultRaw = node.db().use {
                 it.queryKt {
                     find {
-                        sym(p1)
+                        +p1
                     }
 
                     where {
@@ -177,7 +177,7 @@ class SimpleQueries {
                 val resultRaw = node.db().use {
                     it.queryKt {
                         find {
-                            sym(p1)
+                            +p1
                         }
 
                         args {
@@ -210,7 +210,7 @@ class SimpleQueries {
                 val resultRaw = node.db().use {
                     it.queryKt {
                         find {
-                            sym(p1)
+                            +p1
                         }
 
                         args {
@@ -245,7 +245,7 @@ class SimpleQueries {
                 val resultRaw = node.db().use {
                     it.queryKt {
                         find {
-                            sym(p1)
+                            +p1
                         }
 
                         args {
@@ -280,7 +280,7 @@ class SimpleQueries {
                 val resultRaw = node.db().use {
                     it.queryKt {
                         find {
-                            sym(p1)
+                            +p1
                         }
 
                         args {
@@ -318,7 +318,7 @@ class SimpleQueries {
                 val resultRaw = node.db().use {
                     it.queryKt {
                         find {
-                            sym(p1)
+                            +p1
                         }
 
                         args {
@@ -354,7 +354,7 @@ class SimpleQueries {
             val resultRaw = node.db().use {
                 it.queryKt {
                     find {
-                        sym(age)
+                        +age
                     }
 
                     args {
@@ -385,7 +385,7 @@ class SimpleQueries {
             val resultRaw = node.db().use {
                 it.queryKt {
                     find {
-                        sym(age)
+                        +age
                     }
 
                     args {

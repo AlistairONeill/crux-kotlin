@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import test.crux.kotlin.Convenience.TIMEOUT
+import java.util.Comparator
 import kotlin.test.assertNotNull
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -47,8 +48,8 @@ class OrderAndOffset {
             val rawResult = node.db().use {
                 it.queryKt {
                     find {
-                        sym(p)
-                        sym(n)
+                        +p
+                        +n
                     }
 
                     where {
@@ -95,8 +96,8 @@ class OrderAndOffset {
             val rawResult = node.db().use {
                 it.queryKt {
                     find {
-                        sym(p)
-                        sym(n)
+                        +p
+                        +n
                     }
 
                     where {
@@ -146,8 +147,8 @@ class OrderAndOffset {
             val rawResult = node.db().use {
                 it.queryKt {
                     find {
-                        sym(p)
-                        sym(n)
+                        +p
+                        +n
                     }
 
                     where {
@@ -196,8 +197,8 @@ class OrderAndOffset {
             val rawResult = node.db().use {
                 it.queryKt {
                     find {
-                        sym(p)
-                        sym(n)
+                        +p
+                        +n
                     }
 
                     where {
@@ -249,8 +250,8 @@ class OrderAndOffset {
             val rawResult = node.db().use {
                 it.queryKt {
                     find {
-                        sym(p)
-                        sym(n)
+                        +p
+                        +n
                     }
 
                     where {

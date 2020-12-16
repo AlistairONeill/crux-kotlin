@@ -26,13 +26,13 @@ class SubQueries {
             val resultRaw = node.db().use {
                 it.queryKt {
                     find {
-                        sym(x)
+                        +x
                     }
 
                     where {
                         subQuery(x) {
                             find {
-                                sym(y)
+                                +y
                             }
 
                             where {
@@ -62,13 +62,13 @@ class SubQueries {
             val resultRaw = node.db().use {
                 it.queryKt {
                     find {
-                        sym(x)
+                        +x
                     }
 
                     where {
                         subQuery(listOf(listOf(x).pv).pv) {
                             find {
-                                sym(y)
+                                +y
                             }
 
                             where {

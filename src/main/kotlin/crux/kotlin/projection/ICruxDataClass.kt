@@ -4,6 +4,7 @@ import clojure.lang.Keyword
 import clojure.lang.PersistentArrayMap
 import crux.kotlin.CruxKt.DB_ID
 import crux.kotlin.extensions.kw
+import crux.kotlin.projection.annotation.CruxEntity
 import crux.kotlin.projection.annotation.CruxKey
 import crux.kotlin.projection.exception.CruxDocumentFormatException
 import crux.kotlin.queries.ProjectionBuilder
@@ -100,10 +101,12 @@ interface ICruxDataClass {
 
         val className = thisClass.simpleName?.toLowerCase() ?: throw CruxDocumentFormatException("Could not identify the class name")
         val toSet = ArrayList<Pair<Keyword, Any>>()
+        val others = ArrayList<Pair<Any, PutTxBuilder.()->Unit>>()
         for (prop in thisClass.memberProperties) {
             if (prop.name == "cruxId") {
                 continue
             }
+
 
             if (!isAllowed(prop)) {
                 throw CruxDocumentFormatException("Unsupported type ${prop.returnType}")

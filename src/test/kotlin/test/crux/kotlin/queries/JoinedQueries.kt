@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import test.crux.kotlin.Convenience.TIMEOUT
+import java.util.Comparator
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class JoinedQueries {
@@ -56,8 +57,8 @@ class JoinedQueries {
         val resultRaw = node.db().use {
             it.queryKt {
                 find {
-                    sym(p1)
-                    sym(p2)
+                    +p1
+                    +p2
                 }
 
                 where {
@@ -107,7 +108,7 @@ class JoinedQueries {
             val resultRaw = node.db().use {
                 it.queryKt {
                     find {
-                        sym(e2)
+                        +e2
                     }
 
                     where {
@@ -137,7 +138,7 @@ class JoinedQueries {
             val resultRaw = node.db().use {
                 it.queryKt {
                     find {
-                        sym(e2)
+                        +e2
                     }
 
                     where {
