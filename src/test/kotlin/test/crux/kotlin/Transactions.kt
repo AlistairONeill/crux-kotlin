@@ -235,9 +235,8 @@ class Transactions {
 
             node.submitTx {
                 match(pabloId) {
-                    doc(
-                        nameKey to name,
-                        version to 0)
+                    + (nameKey to name)
+                    + (version to 0)
                 }
 
                 put(pabloId) {
@@ -266,9 +265,8 @@ class Transactions {
 
             node.submitTx {
                 match(pabloId) {
-                    doc(
-                        nameKey to name,
-                        version to 5)
+                    + (nameKey to name)
+                    + (version to 5)
                 }
 
                 put(pabloId) {
@@ -295,10 +293,8 @@ class Transactions {
 
             node.submitTx {
                 match(pabloId) {
-                    doc(
-                        version to 0,
-                        nameKey to name
-                    )
+                    + (version to 0)
+                    + (nameKey to name)
                 }
 
                 put(pabloId) {
@@ -335,9 +331,8 @@ class Transactions {
 
             node.submitTx {
                 match(pabloId) {
-                    doc(
-                        nameKey to name,
-                        version to 0)
+                    + (nameKey to name)
+                    + (version to 0)
                     validTime = testTimes[1]
                 }
 
@@ -383,9 +378,8 @@ class Transactions {
 
             node.submitTx {
                 match(pabloId) {
-                    doc(
-                        nameKey to name,
-                        version to 0)
+                    + (nameKey to name)
+                    + (version to 0)
                     validTime = testTimes[4]
                 }
 
@@ -606,9 +600,8 @@ class Transactions {
                 }
 
                 match(pabloId) {
-                    doc(
-                        nameKey to name,
-                        version to 5)
+                    + (nameKey to name)
+                    + (version to 5)
                 }
             }
 

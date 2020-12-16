@@ -8,13 +8,12 @@ class MatchTxBuilder(private val id: Any): AbstractTxStatementBuilder(MATCH) {
     var exists = true
     private var data: HashMap<Any, Any> = hashMapOf(DB_ID to id)
 
-    fun doc(vararg pairs: Pair<Any, Any>) {
-        data = hashMapOf(DB_ID to id)
-        add(*pairs)
-    }
-
     fun add(vararg pairs: Pair<Any, Any>) {
         data.putAll(pairs)
+    }
+
+    operator fun Pair<Any, Any>.unaryPlus() {
+        data[this.first] = this.second
     }
 
     override val words: Array<out Any?>
